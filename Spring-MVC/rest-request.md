@@ -24,12 +24,18 @@ protected abstract class AbstractBaseController {
 ```java
 class MyController extends AbstractBaseController {
 
-    ResponseEntity<ExpectedResponse> requestSomething() {
-        var result = restTemplate.exchange(
-        uriBuilder.toUriString(),
-        HttpMethod.GET,
-        request,
-        ExpectedResponse.class);
+    Optional<ExpectedResponse> requestSomething() {
+        try {
+            var result = restTemplate.exchange(
+            uriBuilder.toUriString(),
+            HttpMethod.GET,
+            request,
+            ExpectedResponse.class);
+            return result.getStatusCode().isError() || !result.hasBody() ? Optional.empty() : Optional.of(result.getBody());
+        } catch (RestClientException ex) {
+            logger.error(ex.getMessage(), ex);
+            return Optional.empty();
+        }
     }
 }
 ```

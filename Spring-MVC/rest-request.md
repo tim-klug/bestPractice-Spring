@@ -31,6 +31,5 @@ class MyController extends AbstractBaseController {
         request,
         ExpectedResponse.class);
     }
-
 }
 ```
